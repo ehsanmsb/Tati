@@ -56,8 +56,12 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 }
 
 func RenderTemplate(w http.ResponseWriter, tmpl string) {
-	tc = app.TemplateCache
-
+	tc = make(map[string]*template.Template)
+	if app.UseCache {
+		tc = app.TemplateCache
+	} else {
+		tc, _ = CreateTemplateCache()
+	}
 	t, ok := tc[tmpl]
 	if !ok {
 		log.Fatal("Could not get template from template cache")
