@@ -9,11 +9,19 @@ import (
 	"text/template"
 
 	"github.com/ehsanmsb/Tati/pkg/config"
+	"github.com/ehsanmsb/Tati/pkg/models"
 )
 
 var tc = make(map[string]*template.Template)
 
 var app *config.AppConfig
+
+func addDefaultData(td *models.TemplateData) *models.TemplateData {
+	stringNew := make(map[string]string)
+	stringNew["NewJoiner"] = "Alireze Moghadam"
+	td.StringMap = stringNew
+	return td
+}
 
 func NewTemplate(a *config.AppConfig) {
 	app = a
@@ -55,7 +63,7 @@ func CreateTemplateCache() (map[string]*template.Template, error) {
 	return myCache, nil
 }
 
-func RenderTemplate(w http.ResponseWriter, tmpl string) {
+func RenderTemplate(w http.ResponseWriter, tmpl string, td *models.TemplateData) {
 	tc = make(map[string]*template.Template)
 	if app.UseCache {
 		tc = app.TemplateCache
@@ -68,7 +76,9 @@ func RenderTemplate(w http.ResponseWriter, tmpl string) {
 	}
 	buf := new(bytes.Buffer)
 
-	err := t.Execute(buf, nil)
+	td = addDefaultData(td)
+
+	err := t.Execute(buf, td)
 	if err != nil {
 		log.Println(err)
 	}

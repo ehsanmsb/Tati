@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/ehsanmsb/Tati/pkg/config"
+	"github.com/ehsanmsb/Tati/pkg/models"
 	"github.com/ehsanmsb/Tati/pkg/render"
 )
 
@@ -26,11 +27,15 @@ func NewHandler(r *Repository) {
 }
 
 func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "home.page.tmpl")
+	render.RenderTemplate(w, "home.page.tmpl", &models.TemplateData{})
 }
 
 func (m *Repository) ContactUs(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, "contact.page.tmpl")
+	stringMap := make(map[string]string)
+	stringMap["NewJoiner"] = "Ehsan Mosayebi"
+	render.RenderTemplate(w, "contact.page.tmpl", &models.TemplateData{
+		StringMap: stringMap,
+	})
 }
 
 func (m *Repository) Aboute(w http.ResponseWriter, r *http.Request) {
